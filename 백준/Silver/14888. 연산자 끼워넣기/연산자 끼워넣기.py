@@ -9,7 +9,7 @@ mn = 1e9
 def dfs(n, temp):
     global mx, mn
     if n == N-1: #끝에 도달하면 return 해서 백트래킹
-        mx = max(temp, mx)
+        mx = max(temp, mx) #왜 (mx, temp) 로 하면 틀릴까?
         mn = min(temp, mn)
         return
     
