@@ -1,16 +1,16 @@
-
 N = int(input())
 A = list(map(int, input().split()))
 cal = list(map(int, input().split()))
-mx = -1e9
-mn = 1e9
-
+mx = -1000000000000 
+#-1e9은 실수라서 max값이 10억이면 실수형이 출력되어 틀리게 됨
+mn = 1000000000000 
+#1e9 얘도 마찬가지. 따라서 초기화를 정수로 하던가 1e10, 1e+1 이런식으로 범위 밖의 값으로 초기화하기
 
 def dfs(n, temp):
     global mx, mn
     if n == N-1: #끝에 도달하면 return 해서 백트래킹
-        mx = max(temp, mx) #왜 (mx, temp) 로 하면 틀릴까?
-        mn = min(temp, mn)
+        mx = max(mx, temp) 
+        mn = min(mn, temp)
         return
     
     if cal[0] !=0:
