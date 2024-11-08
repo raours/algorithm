@@ -1,18 +1,12 @@
-#백준 1026 보물
-import sys
 
-input = sys.stdin.readline
-
-T = int(input())
-
+N = int(input())
 A = list(map(int, input().split()))
 B = list(map(int, input().split()))
 
-
-A.sort()
 result = 0
-for i in range(T):
-    result += A[i]*max(B)
-    B.remove(max(B))
+for i in range(N):
+    result += min(A)*max(B)
+    A.pop(A.index(min(A)))
+    B.pop(B.index(max(B)))
 
 print(result)
