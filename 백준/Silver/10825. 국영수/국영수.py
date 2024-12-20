@@ -1,4 +1,5 @@
-
+import sys
+input = sys.stdin.readline
 T = int(input())
 lst = []
 for _ in range(T):
