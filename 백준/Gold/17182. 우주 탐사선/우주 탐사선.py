@@ -1,31 +1,32 @@
 import sys
 
-def recursive(pos, cnt, cost):
+def recursive(start, cnt, cost):
     global result
 
-    if cnt == N:
+    if cnt == n: #모든 행성을 방문했다면
         result = min(result, cost)
         return
-
-    for next in range(N):
-        if not visit[next]:
+    
+    for next in range(n):
+        if not visit[next]: #방문한 행성이 아니라면
             visit[next] = True
-            recursive(next, cnt + 1, cost + graph[pos][next])
+            recursive(next, cnt+1, cost+graph[start][next])
             visit[next] = False
 
-N, K = map(int, sys.stdin.readline().split())
-graph = [[*map(int, sys.stdin.readline().split())] for _ in range(N)]
+n, k = map(int,input().split())
+graph = [list(map(int,input().split())) for _ in range(n)]
 
-# 1. 플로이드 와샬. 모든 정점 최단 거리 구하기
-for k in range(N):
-    for i in range(N):
-        for j in range(N):
-            graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j])
+#플로이드 워셜 최단거리 구하기
+for K in range(n):
+    for i in range(n):
+        for j in range(n):
+            graph[i][j] = min(graph[i][j], graph[i][K]+graph[K][j])
 
-visit = [False] * N
+
+# backtracking
+visit =[False] * n
 result = int(1e9)
-visit[K] = True
+visit[k] = True
 
-# 2. 행성을 백트래킹으로 탐색하여 모든 행성 방문하여 최소 시간 구하기
-recursive(K, 1, 0)
+recursive(k,1,0)
 print(result)
