@@ -5,7 +5,6 @@
 from collections import deque
 import sys
 
-input = sys.stdin.readline
 
 lst = ''
 for i in range(3):
