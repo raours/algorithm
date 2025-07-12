@@ -16,8 +16,6 @@ for i in range(9):
             posi.append((i,j))
 
 n = len(posi)
-flag = [0]*n
-
 
 def check(r,c,num):
     #가로일 땐, r고정
@@ -40,20 +38,12 @@ def check(r,c,num):
     return True
                 
 
-def check_done():
-    for i in range(n):
-        if flag[i] == 0:
-            return False
-    return True
-
-def dfs(idx,cnt):
-    global board
+def dfs(idx):
     #종료조건 : 전부 맞혔으면,
-    if idx == n and check_done():
+    if idx == n: #어차피 check()로 들어가도 되는지 아닌지 계속 체크해서 넣기 때문에
+        #idx == n 까지 온 거면 그 조건들을 다 만족시키고 모든 빈칸을 채웠다는 소리가 됨!
         for i in range(9):
-            for j in range(9):
-                print(board[i][j], end = " ")
-            print() 
+            print(' '.join(map(str, board[i])))
         exit()
 
     r,c = posi[idx]
@@ -61,11 +51,10 @@ def dfs(idx,cnt):
         #여기에서 체크를 해야함 num이 들어가도 되는지 안되는지
         if check(r,c,num):
             board[r][c] = num
-            flag[idx] = 1
-            dfs(idx+1,cnt+1) #그 칸에 넣었다 뺐다 하며(백트래킹)
+            dfs(idx+1)
             board[r][c] = 0
-            flag[idx] = 0  
 
 
-dfs(0,0)
-           
+dfs(0)
+
+          
