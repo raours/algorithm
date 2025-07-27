@@ -1,90 +1,114 @@
+'''
+2025.7.25, 7.27
+백준 : 미세먼지 안녕!
+'''
 import sys
-
 input = sys.stdin.readline
 
-r, c, t = map(int, input().split())
-
-arr = [list(map(int, input().split())) for _ in range(r)]
-
-up = -1
-down = -1
-# 공기 청정기 위치 찾기
+r,c,t = map(int, input().split())
+lst = []
+robot = []
 for i in range(r):
-    if arr[i][0] == -1:
-        up = i
-        down = i + 1
-        break
+    temp = list(map(int,input().split())) 
+    lst.append(temp)
+    for j in range(c):
+        if temp[j] == -1:
+            robot.append((i,j))
+            
 
-# 미세먼지 확산
-def spread():
-    dx = [-1, 0, 0, 1]
-    dy = [0, -1, 1, 0]
-
-    tmp_arr = [[0] * c for _ in range(r)]
-    for i in range(r):
+dr = [1,-1,0,0]
+dc = [0,0,1,-1]
+for T in range(t):
+    #미세먼지 확산
+    #모든 칸을 돌며, 미세먼지가 있으면 확산, 
+    spread = [[0]*c for _ in range(r)] #여기에 확산된 정보 저장
+    for i in range(r) :
         for j in range(c):
-            if arr[i][j] != 0 and arr[i][j] != -1:
-                tmp = 0
+            if lst[i][j] > 0:
+                a = lst[i][j]
+                plus = a//5
+                cnt = 0
                 for k in range(4):
-                    nx = dx[k] + i
-                    ny = dy[k] + j
-                    if 0 <= nx < r and 0 <= ny < c and arr[nx][ny] != -1:
-                        tmp_arr[nx][ny] += arr[i][j] // 5
-                        tmp += arr[i][j] // 5
-                arr[i][j] -= tmp
+                    nr, nc = i+dr[k], j+dc[k]
+                    if 0<=nr<r and 0<=nc<c and lst[nr][nc] >= 0:
+                        spread[nr][nc] += plus
+                        cnt += 1 #확산된 개수 + 1
 
-    for i in range(r):
-        for j in range(c):
-            arr[i][j] += tmp_arr[i][j]
+                spread[i][j] += (lst[i][j]-plus*cnt)
+    
+    # for i in range(r):
+    #     print(*spread[i])
 
-# 공기청정기 위쪽 이동
-def air_up():
-    dx = [0, -1, 0, 1]
-    dy = [1, 0, -1, 0]
-    direct = 0
-    before = 0
-    x, y = up, 1
-    while True:
-        nx = x + dx[direct]
-        ny = y + dy[direct]
-        if x == up and y == 0:
-            break
-        if nx < 0 or nx >= r or ny < 0 or ny >= c:
-            direct += 1
-            continue
-        arr[x][y], before = before, arr[x][y]
-        x = nx
-        y = ny
+    #공기청정기 작동! 항상 1열에 위치하고 있음
+    # 위 공기 청정기 robot[0]
+    ur, uc = robot[0]
+    downr, downc = robot[1]
+    #소멸
+    if spread[ur-1][uc] > 0:
+        spread[ur-1][uc] = 0
+    # 아래
+    for i in range(ur-1, 0, -1): #한칸씩 끌어내리기
+        if spread[i-1][uc] >0:
+            spread[i][uc] = spread[i-1][uc]
+            spread[i-1][uc] = 0
 
-# 공기청정기 아래쪽 이동
-def air_down():
-    dx = [0, 1, 0, -1]
-    dy = [1, 0, -1, 0]
-    direct = 0
-    before = 0
-    x, y = down, 1
-    while True:
-        nx = x + dx[direct]
-        ny = y + dy[direct]
-        if x == down and y == 0:
-            break
-        if nx < 0 or nx >= r or ny < 0 or ny >= c:
-            direct += 1
-            continue
-        arr[x][y], before = before, arr[x][y]
-        x = nx
-        y = ny
+    #맨 윗줄 왼쪽으로 한칸씩 이동
+    for i in range(c-1):
+        if spread[0][i+1] > 0:
+            spread[0][i] = spread[0][i+1]
+            spread[0][i+1] = 0
 
+    #위로 한칸씩 이동
+    for i in range(ur):
+        spread[i][c-1] = spread[i+1][c-1]
+        spread[i+1][c-1] = 0
+    
+    #오른쪽으로 이동
+    for i in range(c-1, uc, -1):
+        spread[ur][i] = spread[ur][i-1]
+        spread[ur][i-1] = 0
+    
+    
+    #공기청정기 아래부분 start
+    #위로 한칸씩 이동
+    for i in range(downr+1, r-1):
+        spread[i][0] = spread[i+1][0]
+        spread[i+1][0] = 0
 
-for _ in range(t):
-    spread()
-    air_up()
-    air_down()
+    #왼쪽으로 한칸씩 이동
+    for i in range(c-1):
+        if spread[r-1][i+1] > 0:
+            spread[r-1][i] = spread[r-1][i+1]
+            spread[r-1][i+1] = 0 
+    
+    # 아래
+    for i in range(r-1, downr, -1): #한칸씩 끌어내리기
+        if spread[i-1][c-1] >0:
+            spread[i][c-1] = spread[i-1][c-1]
+            spread[i-1][c-1] = 0
 
-answer = 0
+    #오른쪽으로 이동
+    for i in range(c-1, downc+1, -1):
+        spread[downr][i] = spread[downr][i-1]
+        spread[downr][i-1] = 0
+
+    #로봇 자리 다시 표시
+    spread[ur][uc] = -1
+    spread[downr][downc] = -1
+
+    # for i in range(r):
+    #     print(spread[i])
+    
+    lst = spread
+
+   
+
+#답 구하기
+ans = 0
 for i in range(r):
     for j in range(c):
-        if arr[i][j] > 0:
-            answer += arr[i][j]
+        if lst[i][j]>0:
+            ans += lst[i][j]
 
-print(answer)
+print(ans)
+
