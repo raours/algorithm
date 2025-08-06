@@ -1,36 +1,38 @@
 import sys
-sys.setrecursionlimit(10**6)  # 재귀 깊이 설정
-
 input = sys.stdin.readline
+sys.setrecursionlimit(10**6)
+n, m = map(int, input().split())
+graph = []
 
-# 입력
-m, n = map(int, input().split())
-board = [list(map(int, input().split())) for _ in range(m)]
+moves = [
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+    [0, -1]
+]
 
-# 방향: 동, 남, 서, 북
-dr = [0, 1, 0, -1]
-dc = [1, 0, -1, 0]
+visited = [[-1] * m for _ in range(n)]
+for _ in range(n):
+    graph.append(list(map(int, input().split())))
 
-# DP 배열: -1이면 아직 계산 안함, 0 이상이면 경로 수 저장
-dp = [[-1] * n for _ in range(m)]
-
-def dfs(r, c):
-    # 도착 지점에 도달하면 경로 1개
-    if r == m - 1 and c == n - 1:
+def dfs(x, y):
+    # Base Case
+    if x == n - 1 and y == m - 1:
         return 1
+    
+    # 이미 방문한 곳일 때
+    if visited[x][y] != -1:
+        return visited[x][y]
 
-    # 이미 계산된 값이면 바로 반환
-    if dp[r][c] != -1:
-        return dp[r][c]
+    visited[x][y] = 0
 
-    dp[r][c] = 0  # 초기화
+    for move in moves:
+        nx, ny = x + move[0], y + move[1]
 
-    for i in range(4):
-        nr, nc = r + dr[i], c + dc[i]
-        if 0 <= nr < m and 0 <= nc < n:
-            if board[nr][nc] < board[r][c]:  # 내리막길 조건
-                dp[r][c] += dfs(nr, nc)
+        if 0 <= nx < n and 0 <= ny < m:
+            if graph[x][y] > graph[nx][ny]:
+                visited[x][y] += dfs(nx, ny)
 
-    return dp[r][c]
+    return visited[x][y]
 
 print(dfs(0, 0))
