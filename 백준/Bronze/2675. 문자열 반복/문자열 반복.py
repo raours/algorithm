@@ -5,10 +5,7 @@
 
 T = int(input())
 for _ in range(T):
-    R,S = map(str, input().split())
-    R = int(R)
-
-    ans = ""
+    R,S = input().split()
     for s in S:
-        ans += (s*R)
-    print(ans)
+        print(s*int(R), end='')
+    print()
