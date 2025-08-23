@@ -15,4 +15,6 @@ for i in range(n):
     else: #퇴근
         s.discard(human)
 lst = sorted(s, reverse=True) #사전 순 역순
-print(*lst, sep = '\n')
+# print(*lst, sep = '\n')
+#문자열 출력은 .join!!
+print("\n".join(lst))
