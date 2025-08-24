@@ -1,5 +1,6 @@
 '''
 2025.8.24
+set 풀이
 '''
 import sys
 input = sys.stdin.readline
