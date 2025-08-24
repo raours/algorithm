@@ -1,12 +1,22 @@
 '''
 2025.8.24
+이분 탐색으로
 '''
 import sys
-import decimal
 input = sys.stdin.readline
 
 n = int(input())
 
-r = decimal.Decimal(str(n)).sqrt() #부동소수점 문제 해결
-r = int(r)
-print(r if r*r==n else r+1)
+start = 1
+end = n
+ans = n
+while start<=end:
+    mid = (start+end) // 2
+
+    if mid**2 >= n:
+        ans = mid
+        end = mid-1
+    else:
+        start = mid + 1
+
+print(ans)
