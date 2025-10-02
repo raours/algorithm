@@ -1,33 +1,46 @@
 '''
 2025.10.2
+다익스트라
 '''
 import sys
+import heapq
 input = sys.stdin.readline
 
 INF = 1e9
 n,m,r = map(int,input().split())
-items = list(map(int,input().split()))
-lst = [[INF]*n for _ in range(n)]
+items = [0]+list(map(int,input().split()))
+lst = [[] for _ in range(n+1)]
 
 for _ in range(r):
     a,b,l = map(int,input().split())
-    lst[a-1][b-1] = l
-    lst[b-1][a-1] = l
+    lst[a].append((b,l))
+    lst[b].append((a,l))
 
-#플로이드-워셜
-for k in range(n):
-    for i in range(n):
-        for j in range(n):
-            lst[i][j] = min(lst[i][j], lst[i][k]+lst[k][j])
 
 ans = 0
-#어떤 지역에서 최대로 얻게 될지 모르니까 다 해보기
-for i in range(n):
-    temp = 0
-    for j in range(n):
-        if i == j: #자기 지역이면 획득
-            temp += items[i]
-        elif lst[i][j] <= m: #수색범위 안이면, 획득
-            temp += items[j]
-    ans = max(ans, temp)
+#각 지역에 대해 다익스트라!
+for i in range(1,n+1):
+    distance = [INF]*(n+1) #거리 초기화
+    hq = []
+    heapq.heappush(hq, (0,i))
+    distance[i] = 0
+
+    while hq:
+        dist,now = heapq.heappop(hq)
+        if distance[now] <dist: #이미 최단거리면,
+            continue #pass
+        for nxt in lst[now]:
+            nxt_d = dist+nxt[1]
+            if nxt_d < distance[nxt[0]]: #얘를 거쳐가는게 최단거리면,
+                distance[nxt[0]] = nxt_d
+                heapq.heappush(hq, (nxt_d, nxt[0]))
+
+    #i지역에 대한 distance 완성
+    tmp = 0
+    for idx in range(1,n+1):
+        if distance[idx]<=m: #갈 수 있는 지역이라면
+           tmp += items[idx]
+    ans = max(ans, tmp)
+
+
 print(ans)
