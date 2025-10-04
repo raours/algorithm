@@ -1,36 +1,28 @@
-'''
-2025.10.4
-'''
-import sys
-input = sys.stdin.readline
+from sys import stdin
+input = stdin.readline
 
-INF = 1e9
-n,m = map(int,input().split())
-lst = [[INF]*n for _ in range(n)]
+def f(now, idx):
+    for pre in arr[idx]:
+        if not v[now][pre]:
+            v[now][pre] = 1
+            v[pre][now] = 1
+            f(now,pre)
 
-for _ in range(m):
-    a,b = map(int,input().split())
-    lst[a-1][b-1] = 1
 
-#플로이드 워셜
-for k in range(n):
-    for i in range(n):
-        for j in range(n):
-            lst[i][j] = min(lst[i][j], lst[i][k]+lst[k][j])
+N, M = map(int,input().split())
+arr = [[] for _ in range(N+1)]
 
-#lst[i][] 라인에 INF 보다 작은게 있으면 걔네는 i보다 큰 숫자들
-#lst[][i] 라인에 INF보다 작으면, i보다 작은 숫자들
-#그 개수들의 합이 n-1개면 ok!
-cnt = [[] for _ in range(n)]
-for i in range(n):
-    for j in range(n):
-        if lst[i][j] != INF:
-            cnt[i].append(j)
-            cnt[j].append(i)
+for _ in range(M):
+    p, c = map(int,input().split())
+    arr[p].append(c)
 
-ans = 0
-for i in range(n):
-    if len(cnt[i]) == n-1:
-        ans += 1
+v = [[0] * (N+1) for _ in range(N+1)]
 
-print(ans)
+for i in range(1,N+1):
+    v[i][i] = 1
+    f(i,i)
+
+
+
+answer = sum([1 if sum(v[i]) == N else 0 for i in range(1,N+1)])
+print(answer)
