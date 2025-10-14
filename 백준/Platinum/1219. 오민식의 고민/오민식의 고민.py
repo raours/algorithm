@@ -6,7 +6,7 @@ import sys
 from collections import deque
 # 1. 입력 받기
 input = sys.stdin.readline
-INF = -1e9
+INF = -int(1e9)
 n,s,e,m = map(int,input().split())
 lines = []
 route = [[] for _ in range(n)]
