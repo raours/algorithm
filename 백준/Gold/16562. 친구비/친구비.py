@@ -1,6 +1,7 @@
 import sys
 from collections import deque
 
+# 1. 입력 받기
 input = sys.stdin.readline
 
 def find(a):
@@ -26,15 +27,12 @@ for _ in range(m):
     x,y = map(int, input().split())
     union(x,y)
 
-
-for i in range(1,n+1):
-    find(i) #전부 루트 노드로 parent 갱신
-
-friends = set(lst)
 ans = 0
-for f in friends:
-    ans += cost[f]
-
+for i in range(1,n+1):
+    if i == find(i):
+        #루트 노드면,
+        ans += cost[i]
+    
 if k >= ans:
     print(ans)
 else:
